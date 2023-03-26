@@ -1,11 +1,13 @@
 {
     "name": "marmotte/brick",
-    "description": "Brick of Marmot framework",
+    "description": "Brick of Marmotte framework",
     "type": "library",
     "keywords": [
-        "marmot"
+        "marmotte",
+        "framework",
+        "brick"
     ],
-    "homepage": "https://github.com/Marmot-framework/Brick",
+    "homepage": "https://github.com/Marmotte-framework/Brick",
     "license": "MIT",
     "authors": [
         {
