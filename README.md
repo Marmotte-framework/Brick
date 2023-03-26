@@ -8,4 +8,4 @@
 
 [**Contribution guidelines**](CONTRIBUTING.md)
 
-- @Gashmob
+- [Gashmob](https://github.com/Gashmob/)

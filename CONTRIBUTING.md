@@ -7,4 +7,4 @@ Anyone is welcome to contribute to this repository. Please follow these guidelin
 - Open a pull request on branch `develop`
     - The pull request must have a description explain why you opened it
     - PhpUnit tests and Psalm must pass
-    - A Review from the code owner (@Gashmob) is mandatory
+    - A Review from the code owner ([Gashmob](https://github.com/Gashmob/)) is mandatory
