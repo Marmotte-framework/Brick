@@ -39,7 +39,7 @@ use ReflectionException;
  */
 final class BrickLoader
 {
-    private const PACKAGE_TYPE = 'marmot-brick';
+    private const PACKAGE_TYPE = 'marmotte-brick';
     private const CACHE_DIR    = 'bricks';
 
     /**
