@@ -64,13 +64,13 @@ final class BrickManager
      * @throws ServiceAlreadyLoadedException
      * @throws EventNotRegisteredException
      */
-    public function initialize(string $config_path): void
+    public function initialize(string $project_root, string $config_path): void
     {
         // Get Services
         $services        = $this->getClassMap(
             static fn(ReflectionClass $class) => !empty($class->getAttributes(Service::class))
         );
-        $service_manager = new ServiceManager($config_path);
+        $service_manager = new ServiceManager($project_root, $config_path);
         $service_manager->addService($this);
 
         // Get Events

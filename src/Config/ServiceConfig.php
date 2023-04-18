@@ -16,6 +16,7 @@ abstract class ServiceConfig
 
     /**
      * Absolute path to project root
+     * @psalm-suppress PropertyNotSetInConstructor
      */
     public string $project_root;
 }

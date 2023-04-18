@@ -31,6 +31,7 @@ use Marmotte\Brick\Events\EventManager;
 use Marmotte\Brick\Exceptions\EventNotRegisteredException;
 use Marmotte\Brick\Fixtures\Brick\AnEvent;
 use Marmotte\Brick\Fixtures\Brick\AService;
+use Marmotte\Brick\Fixtures\Brick\AServiceConfig;
 use Marmotte\Brick\Services\ServiceManager;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -42,7 +43,7 @@ class BrickManagerTest extends BrickTestCase
         $bl = new BrickLoader();
         try {
             $bl->loadFromDir(__DIR__ . '/Fixtures/Brick');
-            BrickManager::instance()->initialize(__DIR__ . '/Fixtures');
+            BrickManager::instance()->initialize(__DIR__ . '/Fixtures', __DIR__ . '/Fixtures');
         } catch (\Throwable $e) {
             self::fail($e);
         }
@@ -55,18 +56,15 @@ class BrickManagerTest extends BrickTestCase
 
         $service = ServiceManager::instance()->getService(AService::class);
         self::assertInstanceOf(AService::class, $service);
-        $config = $service->getConfig();
-        self::assertIsArray($config);
-        self::assertEquals(['hello' => 'world!'], $config);
+        $config = $service->config;
+        self::assertInstanceOf(AServiceConfig::class, $config);
+        self::assertEquals('world!', $config->hello);
+        self::assertEquals(__DIR__ . '/Fixtures', $config->project_root);
 
         $event_manager = ServiceManager::instance()->getService(EventManager::class);
         self::assertNotNull($event_manager);
-        try {
-            $event = $event_manager->dispatch(new AnEvent(-2));
-            self::assertEquals(42, $event->value);
-        } catch (EventNotRegisteredException $e) {
-            self::fail($e);
-        }
+        $event = $event_manager->dispatch(new AnEvent(-2));
+        self::assertEquals(42, $event->value);
 
         self::assertEquals(2, $service::$counter);
     }

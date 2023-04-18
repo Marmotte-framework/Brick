@@ -25,6 +25,7 @@
 
 namespace Marmotte\Brick\Services;
 
+use Marmotte\Brick\Config\ServiceConfig;
 use Marmotte\Brick\Exceptions\ClassIsNotServiceException;
 use Marmotte\Brick\Exceptions\ServiceAlreadyLoadedException;
 use Marmotte\Brick\Exceptions\ServiceHasNoConstructor;
@@ -33,6 +34,7 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionNamedType;
 use Symfony\Component\Yaml\Yaml;
+use Throwable;
 
 #[Service(autoload: false)]
 final class ServiceManager
@@ -40,10 +42,10 @@ final class ServiceManager
     private static self $instance;
 
     /**
-     * @param string $config_path
      * @throws ServiceAlreadyLoadedException
      */
     public function __construct(
+        private readonly string $project_root,
         private readonly string $config_path
     ) {
         self::$instance = $this;
@@ -139,12 +141,12 @@ final class ServiceManager
                 break;
             }
 
+            /** @var class-string */
             $type_name = $type->getName();
             if (class_exists($type_name) && $this->hasService($type_name)) {
                 $args[] = $this->getService($type_name);
-            } else if ($type_name === 'array' && isset($config)) {
-                /** @var array $config */
-                $args[] = $config;
+            } else if ($c_config = $this->loadConfig($type_name, $config ?? null)) {
+                $args[] = $c_config;
             } else {
                 break;
             }
@@ -162,6 +164,34 @@ final class ServiceManager
         }
 
         return true;
+    }
+
+    /**
+     * @param class-string $config_name
+     */
+    private function loadConfig(string $config_name, ?array $config): false|ServiceConfig
+    {
+        try {
+            $reflection = new ReflectionClass($config_name);
+
+            $parent = $reflection->getParentClass();
+            if (!($parent && $parent->getName() === ServiceConfig::class)) {
+                return false;
+            }
+
+            $method = $reflection->getMethod('fromArray');
+            $object = $method->invoke(null, $config);
+
+            if (!$object instanceof ServiceConfig) {
+                return false;
+            }
+
+            $object->project_root = $this->project_root;
+
+            return $object;
+        } catch (Throwable) {
+            return false;
+        }
     }
 
     /**
