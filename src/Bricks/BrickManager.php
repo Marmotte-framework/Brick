@@ -44,9 +44,7 @@ final class BrickManager
 {
     private static ?self $instance = null;
 
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     public static function instance(): self
     {
@@ -66,13 +64,13 @@ final class BrickManager
      * @throws ServiceAlreadyLoadedException
      * @throws EventNotRegisteredException
      */
-    public function initialize(string $config_path): void
+    public function initialize(string $project_root, string $config_path): void
     {
         // Get Services
         $services        = $this->getClassMap(
             static fn(ReflectionClass $class) => !empty($class->getAttributes(Service::class))
         );
-        $service_manager = new ServiceManager($services, $config_path);
+        $service_manager = new ServiceManager($project_root, $config_path);
         $service_manager->addService($this);
 
         // Get Events
@@ -81,6 +79,9 @@ final class BrickManager
         );
         $event_manager = new EventManager($events, $service_manager);
         $service_manager->addService($event_manager);
+
+        // Load services
+        $service_manager->loadServices($services);
 
         // Get EventListeners
         foreach ($services as $service) {

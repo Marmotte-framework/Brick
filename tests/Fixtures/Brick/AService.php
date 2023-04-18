@@ -32,16 +32,8 @@ use Marmotte\Brick\Services\Service;
 class AService
 {
     public function __construct(
-        private readonly array $config
+        public readonly AServiceConfig $config
     ) {
-    }
-
-    /**
-     * @return array
-     */
-    public function getConfig(): array
-    {
-        return $this->config;
     }
 
     public static int $counter = 0;
