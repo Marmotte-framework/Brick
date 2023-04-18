@@ -40,18 +40,38 @@ final class ServiceManager
     private static self $instance;
 
     /**
-     * @param ReflectionClass[] $services
-     * @throws ServicesAreCycleDependentException
-     * @throws ClassIsNotServiceException
+     * @param string $config_path
      * @throws ServiceAlreadyLoadedException
-     * @throws ServiceHasNoConstructor
      */
     public function __construct(
-        array                   $services,
         private readonly string $config_path
     ) {
         self::$instance = $this;
 
+        $this->addService($this);
+    }
+
+    public static function instance(): self
+    {
+        return self::$instance;
+    }
+
+    // _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-.
+
+    /**
+     * @var class-string-map<T, T>
+     */
+    private array $services = [];
+
+    /**
+     * @param ReflectionClass[] $services
+     * @throws ClassIsNotServiceException
+     * @throws ServiceAlreadyLoadedException
+     * @throws ServiceHasNoConstructor
+     * @throws ServicesAreCycleDependentException
+     */
+    public function loadServices(array $services): void
+    {
         /** @var ReflectionClass[] */
         $leftovers = $services;
         while (!empty($leftovers)) {
@@ -76,22 +96,7 @@ final class ServiceManager
         if (!empty($leftovers)) {
             throw new ServicesAreCycleDependentException($leftovers);
         }
-
-        // Add self to services
-        $this->addService($this);
     }
-
-    public static function instance(): self
-    {
-        return self::$instance;
-    }
-
-    // _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-.
-
-    /**
-     * @var class-string-map<T, T>
-     */
-    private array $services = [];
 
     /**
      * @throws ClassIsNotServiceException
