@@ -33,8 +33,6 @@ use Marmotte\Brick\Exceptions\PackageContainsNoBrickException;
 use Marmotte\Brick\Exceptions\PackageContainsSeveralBrickException;
 use Throwable;
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
 class BrickLoaderTest extends BrickTestCase
 {
     protected function tearDown(): void

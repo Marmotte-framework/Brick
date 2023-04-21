@@ -30,9 +30,6 @@ namespace Marmotte\Brick;
 use Marmotte\Brick\Cache\CacheManager;
 use Marmotte\Brick\Fixtures\ExampleObject;
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
-
 class CacheManagerTest extends BrickTestCase
 {
     public function testCanSave(): void

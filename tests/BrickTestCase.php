@@ -30,8 +30,6 @@ namespace Marmotte\Brick;
 use Marmotte\Brick\Cache\CacheManager;
 use PHPUnit\Framework\TestCase;
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
 abstract class BrickTestCase extends TestCase
 {
     private static function rmDir(string $dir): void

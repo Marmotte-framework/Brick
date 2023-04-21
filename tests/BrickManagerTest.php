@@ -36,8 +36,6 @@ use Marmotte\Brick\Fixtures\Brick\AService;
 use Marmotte\Brick\Fixtures\Brick\AServiceConfig;
 use Marmotte\Brick\Services\ServiceManager;
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
 class BrickManagerTest extends BrickTestCase
 {
     public function testCanLoadBrick()
