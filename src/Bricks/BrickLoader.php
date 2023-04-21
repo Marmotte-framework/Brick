@@ -23,6 +23,8 @@
  * SOFTWARE.
  */
 
+declare(strict_types=1);
+
 namespace Marmotte\Brick\Bricks;
 
 use Composer\ClassMapGenerator\ClassMapGenerator;

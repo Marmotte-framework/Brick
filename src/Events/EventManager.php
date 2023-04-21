@@ -23,6 +23,8 @@
  * SOFTWARE.
  */
 
+declare(strict_types=1);
+
 namespace Marmotte\Brick\Events;
 
 use Marmotte\Brick\Exceptions\EventNotRegisteredException;

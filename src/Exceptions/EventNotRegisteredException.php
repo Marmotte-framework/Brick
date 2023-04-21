@@ -23,6 +23,8 @@
  * SOFTWARE.
  */
 
+declare(strict_types=1);
+
 namespace Marmotte\Brick\Exceptions;
 
 class EventNotRegisteredException extends \Exception
