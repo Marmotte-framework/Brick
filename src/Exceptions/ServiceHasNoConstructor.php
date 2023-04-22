@@ -23,9 +23,11 @@
  * SOFTWARE.
  */
 
+declare(strict_types=1);
+
 namespace Marmotte\Brick\Exceptions;
 
-class ServiceHasNoConstructor extends \Exception
+final class ServiceHasNoConstructor extends \Exception
 {
     public function __construct(\ReflectionClass $service)
     {

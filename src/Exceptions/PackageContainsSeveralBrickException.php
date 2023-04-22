@@ -23,9 +23,11 @@
  * SOFTWARE.
  */
 
+declare(strict_types=1);
+
 namespace Marmotte\Brick\Exceptions;
 
-class PackageContainsSeveralBrickException extends \Exception
+final class PackageContainsSeveralBrickException extends \Exception
 {
     public function __construct(string $package, string $first_brick, string $second_brick)
     {

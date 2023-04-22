@@ -23,6 +23,8 @@
  * SOFTWARE.
  */
 
+declare(strict_types=1);
+
 namespace Marmotte\Brick\Fixtures;
 
 class ExampleObject
@@ -45,6 +47,14 @@ class ExampleObject
         ];
     }
 
+    /**
+     * @param array{
+     *     foo: string,
+     *     pi: float,
+     *     reality: bool,
+     *     truth: int
+     * } $data
+     */
     public function __unserialize(array $data): void
     {
         $this->foo     = $data['foo'];

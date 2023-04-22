@@ -23,30 +23,23 @@
  * SOFTWARE.
  */
 
+declare(strict_types=1);
+
 namespace Marmotte\Brick;
 
 use Marmotte\Brick\Bricks\BrickLoader;
 use Marmotte\Brick\Bricks\BrickManager;
+use Marmotte\Brick\Cache\CacheManager;
 use Marmotte\Brick\Exceptions\PackageContainsNoBrickException;
 use Marmotte\Brick\Exceptions\PackageContainsSeveralBrickException;
 use Throwable;
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
 class BrickLoaderTest extends BrickTestCase
 {
-    protected function tearDown(): void
+    public function testCannotLoadFromDirWithoutBrick(): void
     {
-        parent::tearDown();
-
-        BrickManager::flush();
-    }
-
-    public function testCannotLoadFromDirWithoutBrick()
-    {
-        $bl = new BrickLoader();
         try {
-            $bl->loadFromDir(__DIR__ . '/Fixtures/InvalidBrick');
+            $this->brick_loader->loadFromDir(__DIR__ . '/Fixtures/InvalidBrick');
 
             self::fail();
         } catch (Throwable $e) {
@@ -54,11 +47,10 @@ class BrickLoaderTest extends BrickTestCase
         }
     }
 
-    public function testCannotLoadFromDirWithSeveralBrick()
+    public function testCannotLoadFromDirWithSeveralBrick(): void
     {
-        $bl = new BrickLoader();
         try {
-            $bl->loadFromDir(__DIR__ . '/Fixtures/InvalidBrick2');
+            $this->brick_loader->loadFromDir(__DIR__ . '/Fixtures/InvalidBrick2');
 
             self::fail();
         } catch (Throwable $e) {
@@ -66,36 +58,41 @@ class BrickLoaderTest extends BrickTestCase
         }
     }
 
-    public function testCanLoadFromValidDir()
+    public function testCanLoadFromValidDir(): void
     {
-        $bl = new BrickLoader();
         try {
-            $bl->loadFromDir(__DIR__ . '/Fixtures/Brick');
+            $this->brick_loader->loadFromDir(__DIR__ . '/Fixtures/Brick');
         } catch (Throwable $e) {
-            self::fail($e);
+            self::fail($e->getMessage());
         }
 
-        self::assertCount(1, BrickManager::instance()->getBricks());
+        self::assertCount(1, $this->brick_manager->getBricks());
     }
 
-    public function testCanLoadFromCache()
+    public function testCanLoadFromCache(): void
     {
-        $bl = new BrickLoader();
         try {
-            $bl->loadFromDir(__DIR__ . '/Fixtures/Brick');
+            $this->brick_loader->loadFromDir(__DIR__ . '/Fixtures/Brick');
         } catch (Throwable $e) {
-            self::fail($e);
+            self::fail($e->getMessage());
         }
 
-        $bricks = BrickManager::instance()->getBricks();
+        $bricks = $this->brick_manager->getBricks();
         self::assertCount(1, $bricks);
 
-        BrickManager::flush();
 
-        $bl = new BrickLoader();
-        $bl->loadFromCache();
+        $br = new BrickManager();
+        $bl = new BrickLoader(
+            $br,
+            $this->cache_manager
+        );
+        try {
+            $bl->loadFromCache();
+        } catch (Throwable $e) {
+            self::fail($e->getMessage());
+        }
 
-        $actual = BrickManager::instance()->getBricks();
+        $actual = $br->getBricks();
         self::assertCount(1, $actual);
         self::assertEqualsCanonicalizing($bricks, $actual);
     }

@@ -23,6 +23,8 @@
  * SOFTWARE.
  */
 
+declare(strict_types=1);
+
 namespace Marmotte\Brick\Fixtures\InvalidBrick2;
 
 use Marmotte\Brick\Brick;

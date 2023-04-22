@@ -23,19 +23,29 @@
  * SOFTWARE.
  */
 
+declare(strict_types=1);
+
 namespace Marmotte\Brick;
 
+use Marmotte\Brick\Bricks\BrickLoader;
+use Marmotte\Brick\Bricks\BrickManager;
 use Marmotte\Brick\Cache\CacheManager;
 use PHPUnit\Framework\TestCase;
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
 abstract class BrickTestCase extends TestCase
 {
+    /** @psalm-suppress PropertyNotSetInConstructor */
+    protected CacheManager $cache_manager;
+    /** @psalm-suppress PropertyNotSetInConstructor */
+    protected BrickLoader $brick_loader;
+    /** @psalm-suppress PropertyNotSetInConstructor */
+    protected BrickManager $brick_manager;
+
     private static function rmDir(string $dir): void
     {
-        $files = array_diff(scandir($dir), array('.', '..'));
+        $files = array_diff(scandir($dir), ['.', '..']);
 
+        /** @var string $file */
         foreach ($files as $file) {
             (is_dir("$dir/$file")) ? self::rmDir("$dir/$file") : unlink("$dir/$file");
         }
@@ -43,9 +53,14 @@ abstract class BrickTestCase extends TestCase
         rmdir($dir);
     }
 
-    public static function setUpBeforeClass(): void
+    protected function setUp(): void
     {
-        CacheManager::instance(__DIR__ . '/cache');
+        $this->cache_manager = new CacheManager(__DIR__ . '/cache');
+        $this->brick_manager = new BrickManager();
+        $this->brick_loader  = new BrickLoader(
+            $this->brick_manager,
+            $this->cache_manager
+        );
     }
 
     protected function tearDown(): void

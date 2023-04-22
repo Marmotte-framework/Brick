@@ -23,11 +23,13 @@
  * SOFTWARE.
  */
 
+declare(strict_types=1);
+
 namespace Marmotte\Brick\Exceptions;
 
 use ReflectionClass;
 
-class ServicesAreCycleDependentException extends \Exception
+final class ServicesAreCycleDependentException extends \Exception
 {
     /**
      * @param ReflectionClass[] $services
