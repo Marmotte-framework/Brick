@@ -2,6 +2,8 @@
 
 ## v1.2.0
 
+*2023-04-22*
+
 - Fix code quality : rm use of singletons
 - Name of cache files are now encoded with base64
 
