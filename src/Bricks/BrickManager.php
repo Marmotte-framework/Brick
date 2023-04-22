@@ -44,21 +44,6 @@ use ReflectionNamedType;
 #[Service(autoload: false)]
 final class BrickManager
 {
-    private static ?self $instance = null;
-
-    private function __construct() {}
-
-    public static function instance(): self
-    {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
-
-    // _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-.
-
     /**
      * @throws ServicesAreCycleDependentException
      * @throws ClassIsNotServiceException
@@ -66,7 +51,7 @@ final class BrickManager
      * @throws ServiceAlreadyLoadedException
      * @throws EventNotRegisteredException
      */
-    public function initialize(string $project_root, string $config_path): void
+    public function initialize(string $project_root, string $config_path): ServiceManager
     {
         // Get Services
         $services        = $this->getClassMap(
@@ -140,6 +125,8 @@ final class BrickManager
                 // It's not mandatory to have an init method
             }
         }
+
+        return $service_manager;
     }
 
     // _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-.
@@ -192,15 +179,5 @@ final class BrickManager
         }
 
         return $class_map;
-    }
-
-    // _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-.
-
-    /**
-     * !DANGER! Be careful and very sure before using this method
-     */
-    public static function flush(): void
-    {
-        self::$instance = null;
     }
 }

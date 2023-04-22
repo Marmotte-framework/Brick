@@ -38,30 +38,29 @@ use Marmotte\Brick\Services\ServiceManager;
 
 class BrickManagerTest extends BrickTestCase
 {
-    public function testCanLoadBrick()
+    public function testCanLoadBrick(): void
     {
-        $bl = new BrickLoader();
         try {
-            $bl->loadFromDir(__DIR__ . '/Fixtures/Brick');
-            BrickManager::instance()->initialize(__DIR__ . '/Fixtures', __DIR__ . '/Fixtures');
+            $this->brick_loader->loadFromDir(__DIR__ . '/Fixtures/Brick');
+            $service_manager = $this->brick_manager->initialize(__DIR__ . '/Fixtures', __DIR__ . '/Fixtures');
         } catch (\Throwable $e) {
-            self::fail($e);
+            self::fail($e->getMessage());
         }
 
-        self::assertCount(1, BrickManager::instance()->getBricks());
+        self::assertCount(1, $this->brick_manager->getBricks());
 
-        self::assertTrue(ServiceManager::instance()->hasService(AService::class));
-        self::assertTrue(ServiceManager::instance()->hasService(ServiceManager::class));
-        self::assertTrue(ServiceManager::instance()->hasService(BrickManager::class));
+        self::assertTrue($service_manager->hasService(AService::class));
+        self::assertTrue($service_manager->hasService(ServiceManager::class));
+        self::assertTrue($service_manager->hasService(BrickManager::class));
 
-        $service = ServiceManager::instance()->getService(AService::class);
+        $service = $service_manager->getService(AService::class);
         self::assertInstanceOf(AService::class, $service);
         $config = $service->config;
         self::assertInstanceOf(AServiceConfig::class, $config);
         self::assertEquals('world!', $config->hello);
         self::assertEquals(__DIR__ . '/Fixtures', $config->project_root);
 
-        $event_manager = ServiceManager::instance()->getService(EventManager::class);
+        $event_manager = $service_manager->getService(EventManager::class);
         self::assertNotNull($event_manager);
         $event = $event_manager->dispatch(new AnEvent(-2));
         self::assertEquals(42, $event->value);

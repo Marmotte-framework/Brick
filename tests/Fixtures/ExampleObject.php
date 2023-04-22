@@ -47,6 +47,14 @@ class ExampleObject
         ];
     }
 
+    /**
+     * @param array{
+     *     foo: string,
+     *     pi: float,
+     *     reality: bool,
+     *     truth: int
+     * } $data
+     */
     public function __unserialize(array $data): void
     {
         $this->foo     = $data['foo'];

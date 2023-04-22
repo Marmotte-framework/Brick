@@ -34,9 +34,9 @@ use ReflectionException;
 final class BrickPresenter
 {
     /**
-     * @param string                 $package
+     * @param string $package
      * @param ReflectionClass<Brick> $brick
-     * @param ReflectionClass[]      $class_map
+     * @param ReflectionClass[] $class_map
      */
     public function __construct(
         public readonly string          $package,
@@ -67,19 +67,21 @@ final class BrickPresenter
     }
 
     /**
+     * @param array{
+     *     package: string,
+     *     brick: class-string,
+     *     class_map: class-string[]
+     * } $data
      * @throws ReflectionException
      */
     public function __unserialize(array $data): void
     {
-        /** @var string */
         $this->package = $data['package'];
 
-        /** @var class-string */
         $brick_name = $data['brick'];
         /** @var ReflectionClass<Brick> */
         $this->brick = new ReflectionClass($brick_name);
 
-        /** @var class-string[] */
         $class_map_names = $data['class_map'];
         $this->class_map = array_map(
             static fn(string $class) => new ReflectionClass($class),

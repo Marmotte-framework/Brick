@@ -33,17 +33,27 @@ final class AServiceConfig extends ServiceConfig
 {
     public function __construct(
         public readonly string $hello,
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $array): ServiceConfig
     {
-        return new self($array['hello']);
+        if (isset($array['hello']) && is_string($array['hello'])) {
+            return new self($array['hello']);
+        } else {
+            return new self(self::defaultArray()['hello']);
+        }
     }
 
+    /**
+     * @return array{
+     *     hello: string
+     * }
+     */
     public static function defaultArray(): array
     {
         return [
-            'hello' => 'world!'
+            'hello' => 'world!',
         ];
     }
 }

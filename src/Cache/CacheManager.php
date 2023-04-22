@@ -33,24 +33,13 @@ use Marmotte\Brick\Services\Service;
 #[Service(autoload: false)]
 final class CacheManager
 {
-    private static ?self $instance = null;
-
-    private function __construct(
-        private readonly string $cache_dir,
-        private readonly Mode   $mode,
+    public function __construct(
+        private readonly string $cache_dir = '',
+        private readonly Mode   $mode = Mode::PROD,
     ) {
         if (!file_exists($this->cache_dir)) {
             mkdir($this->cache_dir);
         }
-    }
-
-    public static function instance(string $cache_dir = '', Mode $mode = Mode::PROD): self
-    {
-        if (self::$instance === null) {
-            self::$instance = new self($cache_dir, $mode);
-        }
-
-        return self::$instance;
     }
 
     public function save(string $path, string $name, mixed $object): void
@@ -92,6 +81,6 @@ final class CacheManager
 
     private function getFileName(string $path, string $name): string
     {
-        return hash('sha512', $path . $name);
+        return base64_encode($path . $name);
     }
 }

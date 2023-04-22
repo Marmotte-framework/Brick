@@ -41,8 +41,6 @@ use Throwable;
 #[Service(autoload: false)]
 final class ServiceManager
 {
-    private static self $instance;
-
     /**
      * @throws ServiceAlreadyLoadedException
      */
@@ -50,20 +48,13 @@ final class ServiceManager
         private readonly string $project_root,
         private readonly string $config_path
     ) {
-        self::$instance = $this;
-
         $this->addService($this);
-    }
-
-    public static function instance(): self
-    {
-        return self::$instance;
     }
 
     // _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-.
 
     /**
-     * @var class-string-map<T, T>
+     * @psalm-var class-string-map<T, T>
      */
     private array $services = [];
 

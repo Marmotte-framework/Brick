@@ -27,7 +27,7 @@ declare(strict_types=1);
 
 namespace Marmotte\Brick\Exceptions;
 
-class ServiceAlreadyLoadedException extends \Exception
+final class ServiceAlreadyLoadedException extends \Exception
 {
     public function __construct(string $service)
     {

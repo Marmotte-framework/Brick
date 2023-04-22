@@ -27,7 +27,7 @@ declare(strict_types=1);
 
 namespace Marmotte\Brick\Exceptions;
 
-class EventNotRegisteredException extends \Exception
+final class EventNotRegisteredException extends \Exception
 {
     /**
      * @param class-string $event

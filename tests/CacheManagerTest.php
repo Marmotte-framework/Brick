@@ -34,9 +34,11 @@ class CacheManagerTest extends BrickTestCase
 {
     public function testCanSave(): void
     {
-        CacheManager::instance()->save('', 'test', [
+        $this->cache_manager->save(
+            '', 'test', [
             'foo' => 'bar',
-        ]);
+        ]
+        );
 
         self::assertTrue(file_exists(__DIR__ . '/cache'));
         self::assertCount(1, glob(__DIR__ . '/cache'));
@@ -44,7 +46,7 @@ class CacheManagerTest extends BrickTestCase
 
     public function testCannotLoad(): void
     {
-        $res = CacheManager::instance()->load('', 'gbleskefe');
+        $res = $this->cache_manager->load('', 'gbleskefe');
 
         self::assertNull($res);
     }
@@ -52,12 +54,12 @@ class CacheManagerTest extends BrickTestCase
     public function testCanSaveThenLoadArray(): void
     {
         $content = [
-            'pi' => 3.14
+            'pi' => 3.14,
         ];
 
-        CacheManager::instance()->save('', 'array', $content);
+        $this->cache_manager->save('', 'array', $content);
 
-        $res = CacheManager::instance()->load('', 'array');
+        $res = $this->cache_manager->load('', 'array');
 
         self::assertNotNull($res);
         self::assertIsArray($res);
@@ -73,18 +75,13 @@ class CacheManagerTest extends BrickTestCase
             42
         );
 
-        CacheManager::instance()->save('', ExampleObject::class, $object);
+        $this->cache_manager->save('', ExampleObject::class, $object);
 
-        $res = CacheManager::instance()->load('', ExampleObject::class);
+        $res = $this->cache_manager->load('', ExampleObject::class);
 
         self::assertNotNull($res);
         self::assertIsObject($res);
         self::assertInstanceOf(ExampleObject::class, $res);
         self::assertEquals($object, $res);
-    }
-
-    public function testInstanceReturnsSameInstance(): void
-    {
-        self::assertSame(CacheManager::instance(), CacheManager::instance());
     }
 }

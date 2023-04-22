@@ -27,7 +27,7 @@ declare(strict_types=1);
 
 namespace Marmotte\Brick\Exceptions;
 
-class ClassIsNotServiceException extends \Exception
+final class ClassIsNotServiceException extends \Exception
 {
     public function __construct(\ReflectionClass $class)
     {
