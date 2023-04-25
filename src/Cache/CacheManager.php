@@ -37,7 +37,7 @@ final class CacheManager
         private readonly string $cache_dir = '',
         private readonly Mode   $mode = Mode::PROD,
     ) {
-        if (!file_exists($this->cache_dir)) {
+        if (!file_exists($this->cache_dir) && $this->mode === Mode::PROD) {
             mkdir($this->cache_dir);
         }
     }
@@ -54,6 +54,7 @@ final class CacheManager
     /**
      * @param string $path
      * @param string $name
+     *
      * @return mixed|null
      */
     public function load(string $path, string $name): mixed

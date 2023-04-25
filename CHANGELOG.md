@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.2.1
+
+- CacheManager create cache dir only if prod mode
+
 ## v1.2.0
 
 *2023-04-22*
