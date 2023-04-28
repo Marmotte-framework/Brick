@@ -2,6 +2,8 @@
 
 ## v1.2.1
 
+*2023-04-28*
+
 - CacheManager create cache dir only if prod mode
 - Fix `ServiceConfig::fromArray` called with null when loading Services
 
