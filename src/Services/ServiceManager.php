@@ -173,7 +173,7 @@ final class ServiceManager
             }
 
             $method = $reflection->getMethod('fromArray');
-            $object = $method->invoke(null, $config);
+            $object = $method->invoke(null, $config ?? []);
 
             if (!$object instanceof ServiceConfig) {
                 return false;

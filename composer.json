@@ -44,7 +44,7 @@
         }
     },
     "scripts": {
-        "psalm": "psalm",
+        "psalm": "psalm --no-cache",
         "test": "phpunit tests"
     }
 }
