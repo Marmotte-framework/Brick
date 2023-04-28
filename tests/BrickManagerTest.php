@@ -27,10 +27,8 @@ declare(strict_types=1);
 
 namespace Marmotte\Brick;
 
-use Marmotte\Brick\Bricks\BrickLoader;
 use Marmotte\Brick\Bricks\BrickManager;
 use Marmotte\Brick\Events\EventManager;
-use Marmotte\Brick\Exceptions\EventNotRegisteredException;
 use Marmotte\Brick\Fixtures\Brick\AnEvent;
 use Marmotte\Brick\Fixtures\Brick\AService;
 use Marmotte\Brick\Fixtures\Brick\AServiceConfig;
@@ -66,5 +64,21 @@ class BrickManagerTest extends BrickTestCase
         self::assertEquals(42, $event->value);
 
         self::assertEquals(2, $service::$counter);
+    }
+
+    public function testCanLoadBrickWithoutConfigs(): void
+    {
+        try {
+            $this->brick_loader->loadFromDir(__DIR__ . '/Fixtures/Brick');
+            $service_manager = $this->brick_manager->initialize(__DIR__ . '/Fixtures', '');
+        } catch (\Throwable $e) {
+            self::fail($e->getMessage());
+        }
+
+        self::assertCount(1, $this->brick_manager->getBricks());
+
+        self::assertTrue($service_manager->hasService(AService::class));
+        self::assertTrue($service_manager->hasService(ServiceManager::class));
+        self::assertTrue($service_manager->hasService(BrickManager::class));
     }
 }
