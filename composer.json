@@ -34,8 +34,8 @@
         "psr-4": {
             "Marmotte\\Brick\\": "src/"
         },
-        "classmap": [
-            "src/"
+        "exclude-from-classmap": [
+            "tests/"
         ]
     },
     "autoload-dev": {
@@ -45,6 +45,6 @@
     },
     "scripts": {
         "psalm": "psalm --no-cache",
-        "test": "phpunit tests"
+        "test": "phpunit"
     }
 }
