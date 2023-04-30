@@ -42,7 +42,7 @@ use ReflectionException;
 final class BrickLoader
 {
     private const PACKAGE_TYPE = 'marmotte-brick';
-    private const CACHE_DIR    = 'bricks';
+    private const CACHE_DIR = 'bricks';
 
     public function __construct(
         private readonly BrickManager $brick_manager,
@@ -58,7 +58,7 @@ final class BrickLoader
      */
     public function loadBricks(): void
     {
-        $packages = InstalledVersions::getInstalledPackagesByType(self::PACKAGE_TYPE);
+        $packages = array_unique(InstalledVersions::getInstalledPackagesByType(self::PACKAGE_TYPE));
 
         foreach ($packages as $package) {
             try {
