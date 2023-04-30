@@ -2,6 +2,8 @@
 
 ## v1.2.3
 
+*2023-04-30*
+
 - Remove duplicates when getting installed packages
 - Exclude tests files in `.gitattributes`
 
