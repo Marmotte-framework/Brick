@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.2.4
+
+*2023-05-03*
+
+- Fix `BrickLoader::loadBricks`: remove root package from packages
+
 ## v1.2.3
 
 *2023-04-30*

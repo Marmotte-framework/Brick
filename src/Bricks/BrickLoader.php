@@ -58,7 +58,11 @@ final class BrickLoader
      */
     public function loadBricks(): void
     {
-        $packages = array_unique(InstalledVersions::getInstalledPackagesByType(self::PACKAGE_TYPE));
+        $root     = InstalledVersions::getRootPackage()['name'];
+        $packages = array_filter(
+            array_unique(InstalledVersions::getInstalledPackagesByType(self::PACKAGE_TYPE)),
+            fn(string $package) => $package !== $root
+        );
 
         foreach ($packages as $package) {
             try {
