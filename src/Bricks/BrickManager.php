@@ -33,7 +33,6 @@ use Marmotte\Brick\Events\EventManager;
 use Marmotte\Brick\Exceptions\ClassIsNotServiceException;
 use Marmotte\Brick\Exceptions\EventNotRegisteredException;
 use Marmotte\Brick\Exceptions\ServiceAlreadyLoadedException;
-use Marmotte\Brick\Exceptions\ServiceHasNoConstructor;
 use Marmotte\Brick\Exceptions\ServicesAreCycleDependentException;
 use Marmotte\Brick\Services\Service;
 use Marmotte\Brick\Services\ServiceManager;
@@ -47,7 +46,6 @@ final class BrickManager
     /**
      * @throws ServicesAreCycleDependentException
      * @throws ClassIsNotServiceException
-     * @throws ServiceHasNoConstructor
      * @throws ServiceAlreadyLoadedException
      * @throws EventNotRegisteredException
      */

@@ -25,12 +25,11 @@
 
 declare(strict_types=1);
 
-namespace Marmotte\Brick\Exceptions;
+namespace Marmotte\Brick\Fixtures\Brick;
 
-final class ServiceHasNoConstructor extends \Exception
+use Marmotte\Brick\Services\Service;
+
+#[Service]
+final class AnotherService
 {
-    public function __construct(\ReflectionClass $service)
-    {
-        parent::__construct('Service ' . $service->getName() . ' has no constructor');
-    }
 }

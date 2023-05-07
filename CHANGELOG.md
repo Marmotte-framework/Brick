@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.2.5
+
+- A Service doesn't need to declare empty constructor
+
 ## v1.2.4
 
 *2023-05-03*
