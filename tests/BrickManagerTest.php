@@ -30,6 +30,7 @@ namespace Marmotte\Brick;
 use Marmotte\Brick\Bricks\BrickManager;
 use Marmotte\Brick\Events\EventManager;
 use Marmotte\Brick\Fixtures\Brick\AnEvent;
+use Marmotte\Brick\Fixtures\Brick\AnotherService;
 use Marmotte\Brick\Fixtures\Brick\AService;
 use Marmotte\Brick\Fixtures\Brick\AServiceConfig;
 use Marmotte\Brick\Services\ServiceManager;
@@ -48,6 +49,7 @@ class BrickManagerTest extends BrickTestCase
         self::assertCount(1, $this->brick_manager->getBricks());
 
         self::assertTrue($service_manager->hasService(AService::class));
+        self::assertTrue($service_manager->hasService(AnotherService::class));
         self::assertTrue($service_manager->hasService(ServiceManager::class));
         self::assertTrue($service_manager->hasService(BrickManager::class));
 
@@ -78,6 +80,7 @@ class BrickManagerTest extends BrickTestCase
         self::assertCount(1, $this->brick_manager->getBricks());
 
         self::assertTrue($service_manager->hasService(AService::class));
+        self::assertTrue($service_manager->hasService(AnotherService::class));
         self::assertTrue($service_manager->hasService(ServiceManager::class));
         self::assertTrue($service_manager->hasService(BrickManager::class));
     }

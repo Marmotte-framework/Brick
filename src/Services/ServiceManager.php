@@ -30,7 +30,6 @@ namespace Marmotte\Brick\Services;
 use Marmotte\Brick\Config\ServiceConfig;
 use Marmotte\Brick\Exceptions\ClassIsNotServiceException;
 use Marmotte\Brick\Exceptions\ServiceAlreadyLoadedException;
-use Marmotte\Brick\Exceptions\ServiceHasNoConstructor;
 use Marmotte\Brick\Exceptions\ServicesAreCycleDependentException;
 use ReflectionClass;
 use ReflectionException;
@@ -62,7 +61,6 @@ final class ServiceManager
      * @param ReflectionClass[] $services
      * @throws ClassIsNotServiceException
      * @throws ServiceAlreadyLoadedException
-     * @throws ServiceHasNoConstructor
      * @throws ServicesAreCycleDependentException
      */
     public function loadServices(array $services): void
@@ -96,7 +94,6 @@ final class ServiceManager
     /**
      * @throws ClassIsNotServiceException
      * @throws ServiceAlreadyLoadedException
-     * @throws ServiceHasNoConstructor
      */
     private function loadService(ReflectionClass $service): bool
     {
@@ -125,8 +122,15 @@ final class ServiceManager
 
         $constructor = $service->getConstructor();
         if ($constructor === null) {
-            throw new ServiceHasNoConstructor($service);
+            try {
+                $instance = $service->newInstance();
+                $this->addService($instance);
+                return true;
+            } catch (ReflectionException) {
+                return false;
+            }
         }
+
         $args = [];
         foreach ($constructor->getParameters() as $parameter) {
             $type = $parameter->getType();
