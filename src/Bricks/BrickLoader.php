@@ -42,12 +42,13 @@ use ReflectionException;
 final class BrickLoader
 {
     private const PACKAGE_TYPE = 'marmotte-brick';
-    private const CACHE_DIR = 'bricks';
+    private const CACHE_DIR    = 'bricks';
 
     public function __construct(
         private readonly BrickManager $brick_manager,
         private readonly CacheManager $cache_manager,
     ) {
+        $this->brick_manager->setCacheManager($this->cache_manager);
     }
 
     /**
