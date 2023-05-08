@@ -2,6 +2,8 @@
 
 ## v1.2.6
 
+*2023-05-08*
+
 - Add CacheManager in Services
 
 ## v1.2.5
