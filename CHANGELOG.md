@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.2.6
+
+- Add CacheManager in Services
+
 ## v1.2.5
 
 *2023-05-07*

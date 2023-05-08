@@ -27,6 +27,7 @@ declare(strict_types=1);
 
 namespace Marmotte\Brick\Bricks;
 
+use Marmotte\Brick\Cache\CacheManager;
 use Marmotte\Brick\Events\Event;
 use Marmotte\Brick\Events\EventListener;
 use Marmotte\Brick\Events\EventManager;
@@ -43,6 +44,14 @@ use ReflectionNamedType;
 #[Service(autoload: false)]
 final class BrickManager
 {
+    /** @psalm-suppress PropertyNotSetInConstructor */
+    private CacheManager $cache_manager;
+
+    public function setCacheManager(CacheManager $cache_manager): void
+    {
+        $this->cache_manager = $cache_manager;
+    }
+
     /**
      * @throws ServicesAreCycleDependentException
      * @throws ClassIsNotServiceException
@@ -57,6 +66,8 @@ final class BrickManager
         );
         $service_manager = new ServiceManager($project_root, $config_path);
         $service_manager->addService($this);
+
+        $service_manager->addService($this->cache_manager);
 
         // Get Events
         $events        = $this->getClassMap(
