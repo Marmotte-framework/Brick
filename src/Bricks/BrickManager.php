@@ -105,34 +105,50 @@ final class BrickManager
         }
 
         // Call init on Bricks
-        foreach ($this->bricks as $brick_presenter) {
-            $brick = $brick_presenter->brick;
-            try {
-                $init = $brick->getMethod('init');
+        $leftovers = $this->bricks;
+        while (!empty($leftovers)) {
+            $next   = [];
+            $change = false;
 
-                $args = [];
-                foreach ($init->getParameters() as $param) {
-                    $type = $param->getType();
-                    if (!$type instanceof ReflectionNamedType) {
-                        break;
+            foreach ($leftovers as $brick_presenter) {
+                $brick = $brick_presenter->brick;
+                try {
+                    $init = $brick->getMethod('init');
+
+                    $args = [];
+                    foreach ($init->getParameters() as $param) {
+                        $type = $param->getType();
+                        if (!$type instanceof ReflectionNamedType) {
+                            break;
+                        }
+
+                        $type_name = $type->getName();
+                        if (class_exists($type_name) && $service_manager->hasService($type_name)) {
+                            $args[] = $service_manager->getService($type_name);
+                        } else {
+                            break;
+                        }
+                    }
+                    if (count($args) != $init->getNumberOfParameters()) {
+                        $next[] = $brick_presenter;
+                        continue;
                     }
 
-                    $type_name = $type->getName();
-                    if (class_exists($type_name) && $service_manager->hasService($type_name)) {
-                        $args[] = $service_manager->getService($type_name);
-                    } else {
-                        break;
-                    }
+                    $change = true;
+                    $init->invoke($brick->newInstance(), ...$args);
+                } catch (ReflectionException) {
+                    // Method init not found, ignore it.
+                    // It's not mandatory to have an init method
                 }
-                if (count($args) != $init->getNumberOfParameters()) {
-                    continue;
-                }
-
-                $init->invoke($brick->newInstance(), ...$args);
-            } catch (ReflectionException) {
-                // Method init not found, ignore it.
-                // It's not mandatory to have an init method
             }
+
+            $leftovers = $next;
+            if (!$change) {
+                break;
+            }
+        }
+        if (!empty($leftovers)) {
+            throw new ServicesAreCycleDependentException([]);
         }
 
         return $service_manager;
