@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.2.7
+
+*2023-05-28*
+
+- Fix init call on Bricks
+
 ## v1.2.6
 
 *2023-05-08*
