@@ -29,15 +29,15 @@ namespace Marmotte\Brick\Commands;
 
 use Attribute;
 
-#[Attribute(Attribute::TARGET_CLASS)]
+#[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
 final class Argument
 {
     public function __construct(
-        public readonly string  $name,
-        public readonly ?string $description = null,
-        public readonly string  $type = "string",
-        public readonly bool    $required = false,
-        public readonly bool    $repeatable = false,
+        public readonly string $name,
+        public readonly string $description = '',
+        public readonly string $type = "string",
+        public readonly bool   $required = false,
+        public readonly bool   $repeatable = false,
     ) {
     }
 }
