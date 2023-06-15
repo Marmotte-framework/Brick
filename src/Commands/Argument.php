@@ -27,6 +27,9 @@ declare(strict_types=1);
 
 namespace Marmotte\Brick\Commands;
 
+use Attribute;
+
+#[Attribute(Attribute::TARGET_CLASS)]
 final class Argument
 {
     public function __construct(

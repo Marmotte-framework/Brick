@@ -27,14 +27,10 @@ declare(strict_types=1);
 
 namespace Marmotte\Brick\Commands;
 
-use Attribute;
-
-#[Attribute(Attribute::TARGET_CLASS)]
-final class Command
+interface CommandInterface
 {
-    public function __construct(
-        public readonly string  $name,
-        public readonly ?string $description = null,
-    ) {
-    }
+    /**
+     * Run the command
+     */
+    public function run(InputStream $input, OutputStream $output): bool;
 }
