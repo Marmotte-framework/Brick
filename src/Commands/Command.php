@@ -38,4 +38,9 @@ abstract class Command
         public readonly array   $arguments = [],
     ) {
     }
+
+    /**
+     * Run the command
+     */
+    abstract public function run(InputStream $input, OutputStream $output): bool;
 }
