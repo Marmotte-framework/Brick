@@ -28,15 +28,17 @@ declare(strict_types=1);
 namespace Marmotte\Brick\Commands;
 
 use Marmotte\Brick\Bricks\BrickManager;
+use Marmotte\Brick\Exceptions\CLIException;
 use Marmotte\Brick\Services\Service;
 use Marmotte\Brick\Services\ServiceManager;
 use ReflectionClass;
+use ReflectionException;
 
 #[Service(autoload: false)]
 final class CLI
 {
     /**
-     * @var array<string, ReflectionClass>
+     * @var array<string, ReflectionClass<CommandInterface>>
      */
     private readonly array $commands;
 
@@ -49,11 +51,15 @@ final class CLI
                                                        && $class->implementsInterface(CommandInterface::class)
         );
 
-        $commands = [];
+        /** @var array<string, ReflectionClass<CommandInterface>> $commands */
+        $commands = [
+            'help' => new ReflectionClass(HelpCommand::class),
+        ];
         foreach ($command_classes as $command_class) {
             $command_attr      = $command_class->getAttributes(Command::class)[0];
             $command_attr_inst = $command_attr->newInstance();
 
+            /** @var ReflectionClass<CommandInterface> $command_class */
             $commands[$command_attr_inst->name] = $command_class;
         }
         $this->commands = $commands;
@@ -114,10 +120,83 @@ final class CLI
         ];
     }
 
-    public function run(): never
+    /**
+     * @param string[] $argv
+     * @throws CLIException
+     */
+    public function run(int $argc, array $argv): never
     {
+        if ($argc <= 0 || empty($argv) || $argc !== count($argv)) {
+            throw new CLIException("argc or argv are malformed");
+        }
+
+        // Remove script name to args
+        array_shift($argv);
+
+        $command_name = array_shift($argv) ?? "help";
+
+        $command_class = array_key_exists($command_name, $this->commands) ? $this->commands[$command_name] : null;
+        if (!$command_class) {
+            if ($command_name === "help") {
+                throw new CLIException("Command help not found. Please contact the code owner");
+            } else {
+                $this->run(2, ['_script_', 'help']); // Run help command
+            }
+        }
+
+        $_argument_attrs = $command_class->getAttributes(Argument::class);
+        $args            = [];
         // TODO
-        
-        exit(0);
+
+        try {
+            $command = $this->instantiateCommand($command_class);
+        } catch (ReflectionException) {
+            throw new CLIException(sprintf("Failed to instantiate command %s", $command_name));
+        }
+
+        $output = new OutputStream(STDOUT);
+        $result = $command->run(new InputStream($args), $output);
+        $output->resetColor()->writeln();
+        exit($result ? 0 : 1);
+    }
+
+    /**
+     * @template T of CommandInterface
+     * @param ReflectionClass<T> $command_class
+     * @return T
+     * @throws ReflectionException|CLIException
+     */
+    private function instantiateCommand(ReflectionClass $command_class)
+    {
+        $constructor = $command_class->getConstructor();
+        if (!$constructor) {
+            return $command_class->newInstance();
+        }
+
+        $args = [];
+        foreach ($constructor->getParameters() as $parameter) {
+            $type = $parameter->getType();
+            if (!($type instanceof \ReflectionNamedType)) {
+                throw new CLIException(sprintf(
+                                           "Argument %d of %s command constructor is invalid",
+                                           $parameter->getPosition(),
+                                           $command_class->getName()
+                                       ));
+            }
+
+            /** @var class-string */
+            $type_name = $type->getName();
+            if (class_exists($type_name) && $this->service_manager->hasService($type_name)) {
+                $args[] = $this->service_manager->getService($type_name);
+            } else {
+                throw new CLIException(sprintf(
+                                           "Argument %d of %s command constructor is not a Service",
+                                           $parameter->getPosition(),
+                                           $command_class->getName()
+                                       ));
+            }
+        }
+
+        return $command_class->newInstance(...$args);
     }
 }

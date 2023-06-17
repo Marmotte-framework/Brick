@@ -25,65 +25,14 @@
 
 declare(strict_types=1);
 
-namespace Marmotte\Brick\Commands;
+namespace Marmotte\Brick\Exceptions;
 
-final class OutputStream
+use Exception;
+
+final class CLIException extends Exception
 {
-    private string $buffer = '';
-
-    /**
-     * @param resource $stream
-     */
-    public function __construct(
-        private readonly mixed $stream,
-    ) {
-    }
-
-    public function flush(): void
+    public function __construct(string $msg = "An error occurred when running the cli")
     {
-        fprintf($this->stream, '%s', $this->buffer);
-        $this->buffer = '';
-    }
-
-    public function write(string $str): self
-    {
-        $this->buffer .= $str;
-
-        return $this;
-    }
-
-    public function writeln(string $str = ''): self
-    {
-        return $this->write($str . "\n");
-    }
-
-    public function color(Color $color): self
-    {
-        return $this->write($color->value);
-    }
-
-    public function resetColor(): self
-    {
-        return $this->color(Color::RESET);
-    }
-
-    public function bold(): self
-    {
-        return $this->color(Color::BOLD);
-    }
-
-    public function underline(): self
-    {
-        return $this->color(Color::UNDERLINE);
-    }
-
-    public function blink(): self
-    {
-        return $this->color(Color::BLINK);
-    }
-
-    public function inverse(): self
-    {
-        return $this->color(Color::INVERSE);
+        parent::__construct($msg);
     }
 }

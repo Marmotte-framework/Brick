@@ -25,65 +25,24 @@
 
 declare(strict_types=1);
 
-namespace Marmotte\Brick\Commands;
+namespace Marmotte\Brick;
 
-final class OutputStream
+use Marmotte\Brick\Commands\CLI;
+
+final class CLITest extends BrickTestCase
 {
-    private string $buffer = '';
-
-    /**
-     * @param resource $stream
-     */
-    public function __construct(
-        private readonly mixed $stream,
-    ) {
-    }
-
-    public function flush(): void
+    public function testItHasCommands(): void
     {
-        fprintf($this->stream, '%s', $this->buffer);
-        $this->buffer = '';
-    }
+        try {
+            $this->brick_loader->loadFromDir(__DIR__ . '/Fixtures/Brick');
+            $service_manager = $this->brick_manager->initialize(__DIR__ . '/Fixtures', __DIR__ . '/Fixtures');
+        } catch (\Throwable $e) {
+            self::fail($e->getMessage());
+        }
 
-    public function write(string $str): self
-    {
-        $this->buffer .= $str;
+        $cli = $service_manager->getService(CLI::class);
+        self::assertNotNull($cli);
 
-        return $this;
-    }
-
-    public function writeln(string $str = ''): self
-    {
-        return $this->write($str . "\n");
-    }
-
-    public function color(Color $color): self
-    {
-        return $this->write($color->value);
-    }
-
-    public function resetColor(): self
-    {
-        return $this->color(Color::RESET);
-    }
-
-    public function bold(): self
-    {
-        return $this->color(Color::BOLD);
-    }
-
-    public function underline(): self
-    {
-        return $this->color(Color::UNDERLINE);
-    }
-
-    public function blink(): self
-    {
-        return $this->color(Color::BLINK);
-    }
-
-    public function inverse(): self
-    {
-        return $this->color(Color::INVERSE);
+        self::assertTrue($cli->hasCommand('help'));
     }
 }
