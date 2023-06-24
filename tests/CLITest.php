@@ -28,6 +28,7 @@ declare(strict_types=1);
 namespace Marmotte\Brick;
 
 use Marmotte\Brick\Commands\CLI;
+use Marmotte\Brick\Exceptions\CLIException;
 
 final class CLITest extends BrickTestCase
 {
@@ -44,5 +45,21 @@ final class CLITest extends BrickTestCase
         self::assertNotNull($cli);
 
         self::assertTrue($cli->hasCommand('help'));
+    }
+
+    public function testItThrowsWhenBadArgs(): void
+    {
+        try {
+            $this->brick_loader->loadFromDir(__DIR__ . '/Fixtures/Brick');
+            $service_manager = $this->brick_manager->initialize(__DIR__ . '/Fixtures', __DIR__ . '/Fixtures');
+        } catch (\Throwable $e) {
+            self::fail($e->getMessage());
+        }
+
+        $cli = $service_manager->getService(CLI::class);
+        self::assertNotNull($cli);
+
+        self::expectException(CLIException::class);
+        $cli->run(0, []);
     }
 }
