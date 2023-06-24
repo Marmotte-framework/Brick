@@ -35,9 +35,7 @@ final class Argument
     public function __construct(
         public readonly string $name,
         public readonly string $description = '',
-        public readonly string $type = "string",
         public readonly bool   $required = false,
-        public readonly bool   $repeatable = false,
     ) {
     }
 }
