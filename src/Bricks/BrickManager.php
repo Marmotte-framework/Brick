@@ -28,6 +28,7 @@ declare(strict_types=1);
 namespace Marmotte\Brick\Bricks;
 
 use Marmotte\Brick\Cache\CacheManager;
+use Marmotte\Brick\Commands\CLI;
 use Marmotte\Brick\Events\Event;
 use Marmotte\Brick\Events\EventListener;
 use Marmotte\Brick\Events\EventManager;
@@ -68,6 +69,9 @@ final class BrickManager
         $service_manager->addService($this);
 
         $service_manager->addService($this->cache_manager);
+
+        // Add CLI
+        $service_manager->addService(new CLI($this, $service_manager));
 
         // Get Events
         $events        = $this->getClassMap(
@@ -196,7 +200,7 @@ final class BrickManager
      * @psalm-param ?callable(ReflectionClass): bool $filter
      * @return ReflectionClass[]
      */
-    public function getClassMap(?callable $filter): array
+    public function getClassMap(?callable $filter = null): array
     {
         $class_map = [];
         foreach ($this->bricks as $brick) {
