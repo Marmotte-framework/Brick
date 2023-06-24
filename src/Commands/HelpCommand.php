@@ -78,18 +78,16 @@ final class HelpCommand implements CommandInterface
             if ($argument['required']) {
                 $output->writeln(
                     sprintf(
-                        "%s -> %s\t\t%s",
+                        "%s\t\t%s",
                         $argument['name'],
-                        $argument['type'],
                         $argument['description']
                     )
                 );
             } else {
                 $output->writeln(
                     sprintf(
-                        "[%s] -> %s\t\t%s",
+                        "[%s]\t\t%s",
                         $argument['name'],
-                        $argument['type'],
                         $argument['description']
                     )
                 );

@@ -85,9 +85,7 @@ final class CLI
      *     arguments: array{
      *         name: string,
      *         description: string,
-     *         type: string,
      *         required: bool,
-     *         repeatable: bool,
      *     }[],
      * }|null
      */
@@ -107,9 +105,7 @@ final class CLI
             $arguments[] = [
                 'name'        => $inst->name,
                 'description' => $inst->description,
-                'type'        => $inst->type,
                 'required'    => $inst->required,
-                'repeatable'  => $inst->repeatable,
             ];
         }
 
@@ -144,9 +140,26 @@ final class CLI
             }
         }
 
-        $_argument_attrs = $command_class->getAttributes(Argument::class);
-        $args            = [];
-        // TODO
+        $argument_attrs = $command_class->getAttributes(Argument::class);
+        $args           = [];
+        foreach ($argument_attrs as $argument_attr) {
+            $argument = $argument_attr->newInstance();
+
+            $current_arg = array_shift($argv);
+            if ($current_arg === null) {
+                if ($argument->required) {
+                    throw new CLIException(sprintf("Argument %s is required but not provided, see help for more details", $argument->name));
+                }
+
+                break;
+            }
+
+            if (array_key_exists($argument->name, $args)) {
+                throw new CLIException(sprintf("Argument %s is already provided", $argument->name));
+            } else {
+                $args[$argument->name] = $current_arg;
+            }
+        }
 
         try {
             $command = $this->instantiateCommand($command_class);
